@@ -1,7 +1,38 @@
 /* ============================================================
    中醫生理病理學 — Claude/Anthropic 風格主題
-   warm cream · walnut · terracotta
+   warm cream · walnut · terracotta · Iansui
    ============================================================ */
+
+
+/* ===== 0. 品牌字體（Iansui 芫荽 — 繁體中文 humanist face） === */
+@font-face {
+  font-family: "Iansui";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/Iansui-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Iansui";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../fonts/Iansui-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Iansui";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../fonts/Iansui-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Iansui";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../fonts/Iansui-Regular.ttf") format("truetype");
+}
 
 
 /* ===== 1. 自訂色票（淺色模式） ============================= */
@@ -421,9 +452,11 @@
 }
 
 
-/* ===== 19. 中文襯線優化 ===================================== */
-body {
+/* ===== 19. 中文字體（品牌：Iansui ＋ 系統 fallback） ========== */
+body,
+.md-typeset {
   font-family:
+    "Iansui",
     "Noto Serif TC",
     "Noto Serif CJK TC",
     "Source Han Serif TC",
@@ -436,16 +469,31 @@ body {
     serif;
 }
 
-/* 標題仍用 serif 但較粗，給予「古籍題簽」之質感 */
+/* 標題仍用 brand serif，給予「古籍題簽」之質感 */
 .md-typeset h1,
 .md-typeset h2,
-.md-typeset h3 {
+.md-typeset h3,
+.md-typeset h4 {
   font-family:
+    "Iansui",
     "Noto Serif TC",
     "Noto Serif CJK TC",
     "Source Han Serif TC",
     "Songti TC",
     serif;
+}
+
+/* Header / 導航 / Tabs 也使用品牌字 */
+.md-header,
+.md-tabs,
+.md-nav {
+  font-family:
+    "Iansui",
+    "Noto Sans TC",
+    "PingFang TC",
+    "Microsoft JhengHei",
+    "Heiti TC",
+    sans-serif;
 }
 
 
@@ -478,7 +526,65 @@ body {
 }
 
 
-/* ===== 23. 滾動條（Webkit） ================================= */
+/* ===== 23. 標籤索引頁與標籤元素 ============================= */
+
+/* 標籤頁的自動產生標籤列表 */
+.md-typeset .md-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  margin: 1em 0 1.5em;
+}
+
+/* 個別標籤 chip */
+.md-tag,
+.md-typeset .md-tag {
+  display: inline-block;
+  padding: 0.2em 0.7em;
+  border-radius: 999px;
+  background: var(--md-default-bg-color--lighter);
+  color: var(--md-default-fg-color--light);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  font-size: 0.78em;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.md-tag:hover,
+.md-typeset .md-tag:hover {
+  background: var(--md-accent-fg-color--transparent);
+  border-color: var(--md-accent-fg-color);
+  color: var(--md-accent-fg-color);
+  transform: translateY(-1px);
+}
+
+/* 主題頁頁首之標籤群（front matter tags 自動展示） */
+.md-content__inner > nav.md-tags + h1,
+.md-typeset .md-tags + h1 {
+  margin-top: 1em;
+}
+
+/* 標籤索引頁中按標籤分組之列表 */
+.md-typeset .tagged-pages {
+  list-style: none;
+  padding-left: 0;
+  margin: 0.5em 0 1.5em;
+}
+
+.md-typeset .tagged-pages li {
+  margin: 0.3em 0;
+  padding-left: 1em;
+  border-left: 2px solid var(--md-default-fg-color--lightest);
+}
+
+.md-typeset .tagged-pages li:hover {
+  border-left-color: var(--md-accent-fg-color);
+}
+
+
+/* ===== 24. 滾動條（Webkit） ================================= */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;

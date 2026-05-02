@@ -54,7 +54,8 @@ plugins:
         - zh
         - en
       separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
-  - tags
+  - tags:
+      tags_file: 標籤索引.md
 
 markdown_extensions:
   - abbr
@@ -93,6 +94,9 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/chimungwu/TCM_theory
+
+extra_css:
+  - stylesheets/extra.css
 
 nav:
   - 首頁: index.md
