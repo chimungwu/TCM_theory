@@ -151,4 +151,6 @@ hide:
 - **不是**教科書、醫案集、科普讀物或訓詁專書
 - **是**把《內經》散見之概念按現代學科體系重新編排的學術資源
 
+由 [**吳啓銘**](about/作者.md)（中醫師、醫學博士、教育部審定助理教授、曾任中國醫藥大學中醫學系教師）於中醫教學過程中編撰。
+
 歡迎透過 GitHub 提交修訂建議：[github.com/chimungwu/TCM_theory](https://github.com/chimungwu/TCM_theory)
