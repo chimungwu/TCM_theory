@@ -1,0 +1,180 @@
+site_name: 中醫生理病理學
+site_description: 以《黃帝內經》原文為主的中醫生理病理學體系
+site_author: Doctor Wu
+site_url: https://chimungwu.github.io/TCM_theory/
+
+repo_name: chimungwu/TCM_theory
+repo_url: https://github.com/chimungwu/TCM_theory
+edit_uri: edit/main/docs/
+
+copyright: Copyright &copy; 2026 Doctor Wu
+
+theme:
+  name: material
+  language: zh-TW
+  custom_dir: overrides
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.tabs.link
+    - content.tooltips
+    - toc.follow
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: brown
+      accent: deep orange
+      toggle:
+        icon: material/brightness-7
+        name: 切換深色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: brown
+      accent: deep orange
+      toggle:
+        icon: material/brightness-4
+        name: 切換淺色模式
+  font:
+    text: Noto Serif TC
+    code: JetBrains Mono
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+    view: material/eye
+
+plugins:
+  - search:
+      lang:
+        - zh
+        - en
+      separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
+  - tags
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: ⚓
+      toc_depth: 4
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/chimungwu/TCM_theory
+
+nav:
+  - 首頁: index.md
+  - 設計理念:
+    - 總綱: about/設計理念.md
+    - 引文體例: 參考/引文體例.md
+    - 主題頁模板: 參考/模板.md
+    - 註家簡介: 參考/註家.md
+  - 主題:
+    - 主題/index.md
+    - 基礎物質:
+      - 氣: 主題/基礎物質/氣.md
+      - 血: 主題/基礎物質/血.md
+      - 津液: 主題/基礎物質/津液.md
+      - 精: 主題/基礎物質/精.md
+      - 神: 主題/基礎物質/神.md
+    - 臟腑:
+      - 五臟:
+        - 肝: 主題/臟腑/五臟/肝.md
+        - 心: 主題/臟腑/五臟/心.md
+        - 脾: 主題/臟腑/五臟/脾.md
+        - 肺: 主題/臟腑/五臟/肺.md
+        - 腎: 主題/臟腑/五臟/腎.md
+      - 六腑:
+        - 膽: 主題/臟腑/六腑/膽.md
+        - 胃: 主題/臟腑/六腑/胃.md
+        - 小腸: 主題/臟腑/六腑/小腸.md
+        - 大腸: 主題/臟腑/六腑/大腸.md
+        - 膀胱: 主題/臟腑/六腑/膀胱.md
+        - 三焦: 主題/臟腑/六腑/三焦.md
+      - 奇恆之腑:
+        - 腦: 主題/臟腑/奇恆之腑/腦.md
+        - 髓: 主題/臟腑/奇恆之腑/髓.md
+        - 骨: 主題/臟腑/奇恆之腑/骨.md
+        - 脈: 主題/臟腑/奇恆之腑/脈.md
+        - 女子胞: 主題/臟腑/奇恆之腑/女子胞.md
+    - 病因:
+      - 主題/病因/index.md
+      - 風: 主題/病因/風.md
+      - 寒: 主題/病因/寒.md
+      - 暑: 主題/病因/暑.md
+      - 濕: 主題/病因/濕.md
+      - 燥: 主題/病因/燥.md
+      - 火: 主題/病因/火.md
+      - 七情: 主題/病因/七情.md
+      - 飲食勞逸: 主題/病因/飲食勞逸.md
+      - 痰飲瘀血: 主題/病因/痰飲瘀血.md
+    - 病機:
+      - 主題/病機/index.md
+      - 邪正盛衰: 主題/病機/邪正盛衰.md
+      - 陰陽失調: 主題/病機/陰陽失調.md
+      - 升降出入失常: 主題/病機/升降出入失常.md
+      - 病機十九條: 主題/病機/病機十九條.md
+      - 病傳: 主題/病機/病傳.md
+    - 治則:
+      - 主題/治則/index.md
+      - 治病求本: 主題/治則/治病求本.md
+      - 正治反治: 主題/治則/正治反治.md
+      - 三因制宜: 主題/治則/三因制宜.md
+      - 扶正祛邪: 主題/治則/扶正祛邪.md
+      - 調整陰陽: 主題/治則/調整陰陽.md
+      - 治未病: 主題/治則/治未病.md
+      - 八法: 主題/治則/八法.md
+    - 疾病:
+      - 主題/疾病/index.md
+      - 熱病: 主題/疾病/熱病.md
+      - 瘧: 主題/疾病/瘧.md
+      - 風病: 主題/疾病/風病.md
+      - 咳: 主題/疾病/咳.md
+      - 痺: 主題/疾病/痺.md
+      - 痿: 主題/疾病/痿.md
+      - 厥: 主題/疾病/厥.md
+      - 痛: 主題/疾病/痛.md
+      - 消渴: 主題/疾病/消渴.md
+      - 水腫: 主題/疾病/水腫.md
+      - 眩暈: 主題/疾病/眩暈.md
+      - 積聚: 主題/疾病/積聚.md
+      - 癲狂: 主題/疾病/癲狂.md
+    - 經絡（規劃中）: 待開發/經絡.md
+  - 原文:
+    - 原文/index.md
+    - 素問: 原文/素問/index.md
+    - 靈樞: 原文/靈樞/index.md
+  - 標籤索引: 標籤索引.md
