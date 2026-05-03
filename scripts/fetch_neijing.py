@@ -89,7 +89,7 @@ TIMEOUT = 25
 
 # ─── ctext.org ──────────────────────────────────────────────────────
 
-def fetch_ctext(slug):
+def fetch_ctext(slug, book="", title=""):
     """從 ctext.org 抓取指定篇章的原文。
 
     ctext 用 td.ctext class 包裹原文段落。
@@ -107,15 +107,76 @@ def fetch_ctext(slug):
     paragraphs = []
     for td in soup.select("td.ctext"):
         text = td.get_text(separator="", strip=True)
-        if text and len(text) >= 5:
-            paragraphs.append(text)
+        if not text or len(text) < 5:
+            continue
+        if title and _is_title_artifact(text, book, title):
+            continue
+        paragraphs.append(text)
     return paragraphs or None
 
 
 # ─── wikisource ─────────────────────────────────────────────────────
 
+def _is_title_artifact(text, book, title):
+    """判斷某段文字是否只是頁面標題／導覽／節錨點，應排除。"""
+    text = text.strip()
+    if len(text) > 60:
+        return False  # 真正內容通常較長
+
+    # 篇名相關之前綴
+    candidates = [
+        title,
+        f"{book}·{title}",
+        f"{book}{title}",
+        f"《黃帝內經{book}》",
+        f"黃帝內經·{book}",
+        f"黃帝內經 {book}",
+        f"黃帝內經{book}",
+        f"黃帝內經{book}/{title}",
+    ]
+    for c in candidates:
+        if text == c or text.startswith(c):
+            if len(text) - len(c) <= 20:
+                return True
+
+    # 篇次格式：如「至真要大論篇第七十四」
+    if re.match(rf"^{re.escape(title)}.{{0,2}}第[一二三四五六七八九十百\d]+", text):
+        return True
+
+    # 截斷式錨點：「至真要大... :」「至真要大論…」之類
+    # 規則：短文字（≤30 字）含 "..." 或 "…"，且前綴與篇名匹配 ≥2 字
+    if len(text) <= 30 and ("…" in text or "..." in text):
+        common = 0
+        for i, ch in enumerate(text):
+            if i < len(title) and ch == title[i]:
+                common = i + 1
+            else:
+                break
+        if common >= 2:
+            return True
+
+    # 短文字（≤20 字）且只剩標點與標題前綴
+    if len(text) <= 20:
+        # 移除所有標點與空白後，剩下與篇名前綴重合
+        stripped = re.sub(r"[\s\.\:：。，,…\-—《》「」『』（）()【】\[\]\"']+", "", text)
+        common = 0
+        for i, ch in enumerate(stripped):
+            if i < len(title) and ch == title[i]:
+                common = i + 1
+            else:
+                break
+        if common >= 3 and common >= len(stripped):
+            return True
+
+    # 純導覽詞
+    if text in ("目錄", "編輯", "上一篇", "下一篇", "返回上一級", "返回"):
+        return True
+
+    return False
+
+
 def fetch_wikisource(book, title):
-    """從 zh.wikisource.org 抓取（可能含王冰注）。
+    """從 zh.wikisource.org 抓取（含原文，注少見）。
 
     URL 格式：https://zh.wikisource.org/zh-hant/黃帝內經素問/上古天真論
     """
@@ -135,25 +196,34 @@ def fetch_wikisource(book, title):
         return None, None
 
     # 移除非內容元素
-    for sel in ["table", ".reference", ".noprint", ".printfooter", "#toc"]:
+    junk_selectors = [
+        "table", ".reference", ".noprint", ".printfooter", "#toc",
+        ".mw-editsection", ".navbox", ".mw-empty-elt",
+        ".mw-references-wrap", ".thumb", "h1", "h2", "h3",
+    ]
+    for sel in junk_selectors:
         for el in content.select(sel):
             el.decompose()
 
     # 段落收集
     paragraphs, annotations = [], []
-    for el in content.find_all(["p", "dl", "blockquote"], recursive=True):
+    for el in content.find_all(["p", "dl", "blockquote", "ol", "ul"], recursive=True):
+        # 內嵌的 <small>、<dd>、註腳——可能是王冰注
+        for note_sel in ["small", "sub", ".note", ".gloss"]:
+            for n in el.select(note_sel):
+                ann = n.get_text(strip=True)
+                if ann and len(ann) > 2:
+                    annotations.append(ann)
+                n.decompose()  # 從段落中移除，避免重複出現在原文
+
         text = el.get_text(separator="", strip=True)
         if not text or len(text) < 3:
             continue
-        if text.startswith(("←", "→", "編輯")):
+        if text.startswith(("←", "→", "編輯", "目錄")):
             continue
-        # 王冰注通常以 <small> / 縮排 <dd> 表示
-        smalls = el.find_all("small")
-        if smalls:
-            for s in smalls:
-                ann = s.get_text(strip=True)
-                if ann:
-                    annotations.append(ann)
+        if _is_title_artifact(text, book, title):
+            continue
+
         paragraphs.append(text)
 
     return paragraphs or None, annotations or None
@@ -161,8 +231,23 @@ def fetch_wikisource(book, title):
 
 # ─── 格式化 ─────────────────────────────────────────────────────────
 
+def _num_to_chinese(n):
+    """阿拉伯數字轉中文數字（限 1-99）。"""
+    chars = "零一二三四五六七八九"
+    if n < 10:
+        return chars[n]
+    if n == 10:
+        return "十"
+    if n < 20:
+        return "十" + chars[n - 10]
+    tens, ones = divmod(n, 10)
+    return chars[tens] + "十" + (chars[ones] if ones else "")
+
+
 def format_chapter(book, title, pian_num, paragraphs, annotations, source):
     """產生符合本網站體例的 markdown 內容。"""
+    pian_chinese = _num_to_chinese(pian_num)
+    full_title = f"{title}篇第{pian_chinese}"
     lines = [
         "---",
         "tags:",
@@ -171,9 +256,9 @@ def format_chapter(book, title, pian_num, paragraphs, annotations, source):
         f"  - {title}",
         "---",
         "",
-        f"# {book}·{title}",
+        f"# {book}·{full_title}",
         "",
-        f"> 王冰次註本·篇{pian_num}　·　來源：{source}",
+        f"> 王冰次註本　·　來源：{source}",
         "",
         "## 篇旨",
         "",
@@ -233,7 +318,7 @@ def fetch_chapter(book, title, pian_num, slug, source_pref):
             print(f"  [wikisource] {len(paragraphs)} 段，{ann_count} 條注")
 
     if not paragraphs and source_pref in ("auto", "ctext"):
-        paragraphs = fetch_ctext(slug)
+        paragraphs = fetch_ctext(slug, book=book, title=title)
         if paragraphs:
             source = "ctext.org"
             print(f"  [ctext] {len(paragraphs)} 段（無王冰注）")
