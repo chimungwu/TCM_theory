@@ -78,11 +78,14 @@ CHAPTERS = {
 CTEXT_BASE = "https://ctext.org/huangdi-neijing"
 WIKISOURCE_BASE = "https://zh.wikisource.org/zh-hant"
 DOCS_BASE = Path(__file__).resolve().parent.parent / "docs" / "原文"
+# 用較像瀏覽器的 User-Agent，避免被簡單防爬擋掉
 HEADERS = {
     "User-Agent": (
-        "Mozilla/5.0 (compatible; TCMTheoryFetch/1.0; "
-        "+https://github.com/chimungwu/TCM_theory)"
-    )
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "zh-TW,zh;q=0.9,en;q=0.8",
 }
 TIMEOUT = 25
 
