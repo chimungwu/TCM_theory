@@ -1,66 +1,51 @@
 # scripts/
 
-> 開發用腳本。**不會被 MkDocs 收錄**（不在 `docs/` 內）。
+> 開發用腳本與原文源檔。**不會被 MkDocs 收錄**（不在 `docs/` 內）。
 
-## fetch_neijing.py — 抓取《黃帝內經》原文
+## 檔案說明
 
-從 zh.wikisource.org 與 ctext.org 兩處輪替抓取 33 篇高頻引用篇之原文，自動填入 `docs/原文/` 之對應檔。
+| 檔案 | 用途 |
+|---|---|
+| `CM017.txt` | 素問 81 篇原文（Big5 編碼，行政院衛生署中醫藥委員會建檔） |
+| `CM018.txt` | 靈樞 81 篇原文（Big5 編碼，同上） |
+| `parse_neijing.py` | **正式轉換腳本**——由 CM017/CM018 產生 33 篇原文 |
+| `fetch_neijing.py` | （已棄用）從 wikisource/ctext 抓取——網路受限，改用本地源檔 |
+| `parse_local_neijing.py` | （已棄用）舊版轉換腳本，編碼處理有瑕疵 |
+| `parse_local_neijing_fixed.py` | （已棄用）舊版修正稿，仍有造字問題 |
 
-### 安裝套件
+> 已棄用之三支腳本可逕行刪除。
+
+## parse_neijing.py — 由 Big5 源檔產生原文
+
+### 用法
 
 ```powershell
-pip install requests beautifulsoup4
+python scripts/parse_neijing.py            # 產生 33 篇
+python scripts/parse_neijing.py --dry-run  # 只顯示，不寫檔
 ```
 
-### 執行
+### 處理重點
 
-```powershell
-# 抓全部 33 篇
-python scripts/fetch_neijing.py
+1. **Big5 解碼**：源檔為 Big5，含《內經》生僻古字之**造字（自訂字）**
+2. **造字對照表**（`GAIJI_MAP`）：84 個造字碼，由《內經》固定文本之上下文逐一判定
+   - 例：`824a`→脅、`8250`→䐜、`824e`→䐃、`8252`→䀮
+   - 3 個罕用碼（`827c`/`82bb`/`82df`）標為 `〔□〕` 待校——但未出現於選定之 33 篇
+3. **依篇次匹配**：源檔 81 篇依序，依篇次號取對應篇章
+4. **異體字**：原文頁採源檔原字（五**藏**生成、**欬**論），與主題頁之現代字（五**臟**、**咳**）區別
 
-# 只抓單篇（建議先測一篇看格式對不對）
-python scripts/fetch_neijing.py --chapter 至真要大論
+### 若要擴充到全 162 篇
 
-# 只抓素問
-python scripts/fetch_neijing.py --book 素問
+`parse_neijing.py` 中 `TARGETS_SU` / `TARGETS_LING` 已限定 33 篇。
+源檔含全 81+81 篇，欲擴充只需把目標字典補齊，再於 `mkdocs.yml` 加入導航。
 
-# Dry-run（不寫檔，只看會抓到什麼）
-python scripts/fetch_neijing.py --dry-run
+## 造字對照表（GAIJI_MAP）摘要
 
-# 強制只用某一來源
-python scripts/fetch_neijing.py --source wikisource
-python scripts/fetch_neijing.py --source ctext
+84 個造字已全數判定。高頻者：
 
-# 調整篇間延遲（避免太快被 ban）
-python scripts/fetch_neijing.py --delay 5
-```
+| 造字碼 | 字 | 造字碼 | 字 | 造字碼 | 字 |
+|---|---|---|---|---|---|
+| 824a | 脅 | 8247 | 胻 | 8252 | 䀮 |
+| 8250 | 䐜 | 824e | 䐃 | 825c | 焫 |
+| 8248 | 腨 | 8244 | 骶 | 8258 | 㿉 |
 
-### 來源說明
-
-| 來源 | 內容 | 優點 | 限制 |
-|---|---|---|---|
-| **zh.wikisource.org** | 王冰注本（部分含註） | 較完整、含註 | 段落分割可能不規整 |
-| **ctext.org** | 純原文 | 段落清楚 | 無王冰注 |
-
-預設策略 `--source auto`：先試 wikisource、失敗則退到 ctext。
-
-### 注意事項
-
-1. **腳本會覆寫**現有的 `.md` 檔。建議先 `git commit` 或備份。
-2. **需手動校對**：尤其是 wikisource 抓到的內容，標點符號與分段可能需要調整。
-3. **王冰注**抓到的部分需要進一步整理——wikisource 的格式不一定一致。
-4. 抓取速度受網路與目標站台 rate-limit 影響，建議 `--delay 2` 以上。
-
-### 抓取後的工作流程
-
-```
-1. python scripts/fetch_neijing.py --chapter 至真要大論
-   → 看 docs/原文/素問/至真要大論.md 結果
-
-2. 若格式 OK → 全部抓：
-   python scripts/fetch_neijing.py
-
-3. 校對：手動修正標點、分段、王冰注配對
-
-4. git commit, push
-```
+完整對照見 `parse_neijing.py` 之 `GAIJI_MAP`。
