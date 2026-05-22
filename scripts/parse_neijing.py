@@ -147,8 +147,8 @@ def parse_book(path):
             pian_index += 1
             title = line.split("=", 2)[2].strip()
             cur = {"num": pian_index, "title": title}
-        elif line.startswith("2=標題="):
-            # 章界——作段落分隔
+        elif re.match(r"^\d+=標題=", line):
+            # 章、節界（2=標題=、3=標題=（第N節）⋯）——作段落分隔，標記本身不計入內文
             flush_para()
         elif cur is not None:
             if line.strip():
