@@ -53,8 +53,7 @@ plugins:
         - zh
         - en
       separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
-  - tags:
-      tags_file: 標籤索引.md
+  - tags
 
 markdown_extensions:
   - abbr
