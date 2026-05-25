@@ -7,7 +7,7 @@ repo_name: chimungwu/TCM_theory
 repo_url: https://github.com/chimungwu/TCM_theory
 edit_uri: edit/main/docs/
 
-copyright: Copyright &copy; 2026 Doctor Wu
+copyright: 本站為《黃帝內經》理論研究索引，所列方藥治法僅作體系說明，非臨床診療指引。&nbsp;·&nbsp;Copyright &copy; 2026 Doctor Wu
 
 theme:
   name: material
@@ -105,6 +105,10 @@ nav:
     - 主題頁模板: 參考/模板.md
   - 主題:
     - 主題/index.md
+    - 總論:
+      - 主題/總論/index.md
+      - 陰陽: 主題/總論/陰陽.md
+      - 五行: 主題/總論/五行.md
     - 基礎物質:
       - 氣: 主題/基礎物質/氣.md
       - 血: 主題/基礎物質/血.md
@@ -172,7 +176,9 @@ nav:
       - 水腫: 主題/疾病/水腫.md
       - 眩暈: 主題/疾病/眩暈.md
       - 積聚: 主題/疾病/積聚.md
+      - 脹: 主題/疾病/脹.md
       - 癲狂: 主題/疾病/癲狂.md
+      - 癰疽: 主題/疾病/癰疽.md
     - 經絡:
       - 主題/經絡/index.md
       - 經絡總論: 主題/經絡/總論.md
