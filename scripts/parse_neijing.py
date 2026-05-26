@@ -189,8 +189,6 @@ def format_chapter(book, pian_num, src_title, paragraphs):
         "",
         f"# {book}·{full_title}",
         "",
-        "> 底本：行政院衛生署中醫藥委員會建檔本（春秋戰國·佚名·黃帝內經）",
-        "",
         "## 篇旨",
         "",
         "> 待補（請補一段簡介本篇大要）",
